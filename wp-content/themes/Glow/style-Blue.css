@@ -1,0 +1,30 @@
+body { background:#040c0f url(images/blue/bg.jpg) no-repeat scroll center top; }
+
+ul#page-menu > li.current_page_item, ul#page-menu > li.current-cat { background:transparent url(images/blue/page-active-bg.png) repeat-x scroll left top; border-color:#6ab2e0 #4c82a5 #407293 #5696bf; }
+ul#page-menu > li.current_page_item a, ul#page-menu > li.current-cat > a { background:transparent url(images/blue/page-link-active-arrow.png) no-repeat scroll center bottom; }
+ul#page-menu > li.current_page_item > a:hover, ul#page-menu > li.current_page_item:hover > a  { background: url(images/blue/page-link-active-arrow.png) no-repeat scroll bottom center; }
+	ul#page-menu li li { background:transparent url(images/blue/categories-menu-linkbg.png) no-repeat scroll 14px 50%; }
+		ul#page-menu li li a, ul#page-menu li.current_page_item li a { border-color:#3e5354; }
+		
+ul#cats-menu li li a { background:transparent url(images/blue/categories-menu-linkbg.png) no-repeat scroll 14px 50%; }
+
+.new-post div.date { background:transparent url(images/blue/big-date-leftbg.png) no-repeat scroll left top; }
+	.new-post div.date div.main { background:transparent url(images/blue/bigdate-mainbg.png) repeat-x scroll 0 0; }
+	.new-post div.date div.rightside { background:transparent url(images/blue/bigdate-rightbg.png) no-repeat scroll right top; }
+
+.mainpost-wrap div.date { background:transparent url(images/blue/smalldate-leftbg.png) no-repeat scroll left top; }
+	.mainpost-wrap div.date div.main { background:transparent url(images/blue/smalldate-mainbg.png) repeat-x scroll 0 0; }
+	.mainpost-wrap div.date div.rightside { background:transparent url(images/blue/smalldate-rightbg.png) no-repeat scroll right top; }
+
+.wp-pagenavi span.current, .wp-pagenavi a:hover, .wp-pagenavi span.extend  { background-color:#6f8cad !important; border:1px solid #597899 !important; }
+
+.post .new-post a.post-edit-link { background:#2d597b; }
+a.comment-reply-link { background:transparent url(images/blue/reply-bg.png) repeat-x scroll 0 0; }
+.reply-container { background:transparent url(images/blue/reply-right-bg.png) no-repeat scroll right bottom; }
+	
+#footer { background-color: #040c0f; color: #717881; }	
+
+/*------------------------------------------------*/
+.no_sidebar #main-area-wrap{background-image:url("images/main-area-bg-full.png") !important;}
+.no_sidebar div#wrapper div.post {width: 960px;}
+.no_sidebar .new-post {width:875px;}

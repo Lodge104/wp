@@ -1,0 +1,69 @@
+/*
+Theme Name: Fearless Child Theme
+Description: Starter child theme for Fearless
+Author: Your Name Here
+Version: 1.0
+Template: fearless
+*/
+
+@import url( '../fearless/style.css' );
+
+
+/* Add your custom CSS styles here */
+body {background-color:#C5C5C5 !important}
+.post ul li 
+{ 
+	list-style-position: outside !important; list-style-image: url(/wp-content/themes/fearless-child/icon_oa.gif) !important; 
+}
+.page ul li 
+{ 
+	list-style-position: outside !important; list-style-image: url(/wp-content/themes/fearless-child/icon_oa.gif) !important; 
+}
+
+.category-label-wrapper {
+	display: none;
+}
+
+.logo-image-enabled #site-title a {
+	display: inline;
+	overflow: hidden;
+}
+
+.wpcf7 input[type="text"],
+.wpcf7 input[type="email"],
+.wpcf7 textarea
+{
+	background-color: #fff;
+	color: #000;
+	width: 100%;
+	height: 30px;
+	padding: 5px 5px 5px 5px;
+}
+
+.wpcf7 input[type="date"]
+{
+	background-color: #fff;
+	color: #000;
+	height: 30px;
+	padding: 5px 5px 5px 5px;
+}
+
+.wpcf7 input[type="submit"]
+{
+	color: #fff;
+	border-radius: 10px;
+	background: #a91515
+}
+.wpcf7 input[type="submit"]:hover
+{
+	color: #fff;
+	background: #1B926C
+}
+
+.entry-title {
+	color: #B41F37;
+}
+
+select#tinynav1.tinynav.tinynav1 {
+	height: 40px;
+}
