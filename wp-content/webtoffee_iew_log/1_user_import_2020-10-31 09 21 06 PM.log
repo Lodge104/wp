@@ -1,0 +1,53 @@
+10-31-2020 @ 21:21:06 - ---[ New import started at 2020-10-31 21:21:06 ] PHP Memory: 256 MB, WP Memory: 256 MB
+10-31-2020 @ 21:21:06 - Preparing for import.
+10-31-2020 @ 21:21:06 - Row :1 - Parsing item.
+10-31-2020 @ 21:21:06 - Row :1 - Processing item.
+10-31-2020 @ 21:21:06 - Processing users.
+10-31-2020 @ 21:21:06 - > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :1 - Processing failed. Reason: > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :2 - Parsing item.
+10-31-2020 @ 21:21:06 - Row :2 - Processing item.
+10-31-2020 @ 21:21:06 - Processing users.
+10-31-2020 @ 21:21:06 - > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :2 - Processing failed. Reason: > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :3 - Parsing item.
+10-31-2020 @ 21:21:06 - Row :3 - Processing item.
+10-31-2020 @ 21:21:06 - Processing users.
+10-31-2020 @ 21:21:06 - > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :3 - Processing failed. Reason: > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :4 - Parsing item.
+10-31-2020 @ 21:21:06 - Row :4 - Processing item.
+10-31-2020 @ 21:21:06 - Processing users.
+10-31-2020 @ 21:21:06 - > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :4 - Processing failed. Reason: > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :5 - Parsing item.
+10-31-2020 @ 21:21:06 - Row :5 - Processing item.
+10-31-2020 @ 21:21:06 - Processing users.
+10-31-2020 @ 21:21:06 - > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :5 - Processing failed. Reason: > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :6 - Parsing item.
+10-31-2020 @ 21:21:06 - Row :6 - Processing item.
+10-31-2020 @ 21:21:06 - Processing users.
+10-31-2020 @ 21:21:06 - > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :6 - Processing failed. Reason: > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :7 - Parsing item.
+10-31-2020 @ 21:21:06 - Row :7 - Processing item.
+10-31-2020 @ 21:21:06 - Processing users.
+10-31-2020 @ 21:21:06 - > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :7 - Processing failed. Reason: > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :8 - Parsing item.
+10-31-2020 @ 21:21:06 - Row :8 - Processing item.
+10-31-2020 @ 21:21:06 - Processing users.
+10-31-2020 @ 21:21:06 - > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :8 - Processing failed. Reason: > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :9 - Parsing item.
+10-31-2020 @ 21:21:06 - Row :9 - Processing item.
+10-31-2020 @ 21:21:06 - Processing users.
+10-31-2020 @ 21:21:06 - > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :9 - Processing failed. Reason: > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :10 - Parsing item.
+10-31-2020 @ 21:21:06 - Row :10 - Processing item.
+10-31-2020 @ 21:21:06 - Processing users.
+10-31-2020 @ 21:21:06 - > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - Row :10 - Processing failed. Reason: > Error inserting 1: Sorry, that email address is already used!
+10-31-2020 @ 21:21:06 - ---[ Import ended at 2020-10-31 21:21:06]---

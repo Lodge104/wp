@@ -1,0 +1,75 @@
+.ui-tabs .ui-tabs-nav {
+  background-image: none;
+  background-color: inherit;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  height: auto;
+  margin: 18px 0 20px;
+  padding: 0 10px;
+  overflow: visible;
+}
+.ui-tabs .ui-tabs-nav li {
+  background-color: transparent;
+  background-image: none;
+  border:none;
+  display: inline-block;
+  position: relative;
+  margin: 1px 0 2px;
+  height: auto;
+  width: auto;
+}
+.ui-tabs .ui-tabs-nav li.ui-tabs-active.ui-state-active {
+  margin-bottom:0;
+}
+.ui-tabs .ui-tabs-nav .ui-state-default a {
+  background-color: rgba(0,0,0,0.1);
+ text-shadow: none;
+  padding-bottom: 9px;
+}
+.ui-tabs .ui-tabs-nav .ui-tabs-active.ui-state-active a {
+  background-color: rgba(0,0,0,0);
+  padding-bottom: 11px;
+}
+.ui-tabs .ui-tabs-nav li a {
+  padding: 4px 20px 6px;
+  font-weight: normal;
+}
+.ui-tabs .ui-tabs-nav li a {
+  line-height: 1.4;
+  display: inline-block;
+  padding: 9px 12px 5px;
+  margin: 0 4px 0 0;
+  border-style: solid;
+  border-color: #CCC #CCC #F9F9F9;
+  border-width: 1px 1px 0;
+  color: #888888;
+  background-color:#eeeeee;
+  text-shadow: rgba(255, 255, 255, 1) 0 1px 0;
+  text-decoration: none;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+.ui-tabs .ui-tabs-nav li a:hover {
+  color: #000000;
+  background-color: #F3F3F3;
+  
+}
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, 
+.ui-tabs .ui-tabs-nav li.ui-state-active a,
+.ui-tabs .ui-tabs-nav li a:focus {
+  color: #333333;
+  outline:none;
+}
+.pdb-tab-control {
+  display: none;
+}
+.pdb-tab-control.ui-tabs-nav {
+  display: block;
+}
+
+.pdb-signup.ui-widget.ui-widget-content,
+.pdb-record.ui-widget.ui-widget-content,
+.pdb-single.ui-widget.ui-widget-content {
+    border: none;
+    background-color: transparent;
+}
