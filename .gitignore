@@ -1,3 +1,5 @@
 wp-config.php
 wp-config-sample.php
 wp-content/uploads/*
+wp-content/cache/*
+wp-content/et-cache/*
