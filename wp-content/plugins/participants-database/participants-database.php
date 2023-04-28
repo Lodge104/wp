@@ -4,7 +4,7 @@
  * Plugin URI: https://xnau.com/wordpress-plugins/participants-database
  * Description: Plugin for managing a database of participants, members or volunteers
  * Author: Roland Barker, xnau webdesign
- * Version: 2.1.8
+ * Version: 2.1.9
  * Author URI: https://xnau.com
  * License: GPL3
  * Text Domain: participants-database
@@ -1571,8 +1571,8 @@ class Participants_Db extends PDb_Base {
   {
     do_action( 'pdb-clear_page_cache', isset( $post['shortcode_page'] ) ? $post['shortcode_page'] : $_SERVER['REQUEST_URI'] );
     
-    $record_match = \PDb_submission\match\record::get_object( $post, $record_id );
-    /** @var PDb_submission\match\record $record_match */
+    $record_match = \PDb_submission\matching\record::get_object( $post, $record_id );
+    /** @var PDb_submission\matching\record $record_match */
 
     // modify the action according the the match mode
     $action = $record_match->get_action( $action );
@@ -2010,7 +2010,7 @@ class Participants_Db extends PDb_Base {
    */
   public static function field_value_exists( $value, $field, $mask_id = 0 )
   {
-    return \PDb_submission\match\record::field_value_exists($value, $field, $mask_id);
+    return \PDb_submission\matching\record::field_value_exists($value, $field, $mask_id);
   }
 
   /**
@@ -2945,20 +2945,29 @@ class Participants_Db extends PDb_Base {
    * sets an error if it fails
    * 
    * @param string $dir the name of the new directory
+   * @return bool success
    */
   public static function _make_uploads_dir( $dir = '' )
   {
 
     $dir = empty( $dir ) ? Participants_Db::files_location() : $dir;
     $savedmask = umask( 0 );
-    $status = true;
-    if ( mkdir( Participants_Db::base_files_path() . $dir, 0755, true ) === false ) {
-
+    
+    // create the uploads directory
+    $status = mkdir( Participants_Db::base_files_path() . $dir, 0755, true );
+    
+    if ( $status === false )
+    {
+      $message = sprintf( __( 'The uploads directory (%s) could not be created.', 'participants-database' ), $dir ) . '<a href="https://xnau.com/work/wordpress-plugins/participants-database/participants-database-documentation/participants-database-settings-help/#File-Upload-Location"><span class="dashicons dashicons-editor-help"></span></a>';
+      
       if ( is_object( self::$validation_errors ) )
-        self::$validation_errors->add_error( '', sprintf( __( 'The uploads directory (%s) could not be created.', 'participants-database' ), $dir ) );
-
-      $status = false;
+      {
+        self::$validation_errors->add_error( '', $message );
+      } else {
+        PDb_Admin_Notices::post_error( $message, '' );
+      }
     }
+    
     umask( $savedmask );
     return $status;
   }
