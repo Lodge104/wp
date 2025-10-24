@@ -1,0 +1,58 @@
+# Ignore OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ignore Docker files
+.docker/
+
+# Ignore environment files
+.env
+.env.local
+.env.production
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore WordPress uploads if you don't want to track them
+uploads/
+wp-content/uploads/
+
+# Ignore WordPress cache
+wp-content/cache/
+wp-content/advanced-cache.php
+
+# Ignore WordPress config files with sensitive data
+wp-config-local.php
+wp-config-production.php
+
+# Ignore backup files
+*.bak
+*.backup
+
+# Ignore node modules if using any build tools
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignore composer vendor if using PHP dependencies
+vendor/
+
+# Ignore database dumps
+*.sql
+*.sql.gz

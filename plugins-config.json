@@ -1,0 +1,348 @@
+{
+  "plugins": [
+    {
+      "name": "UserWay Accessibility Widget",
+      "slug": "userway-accessibility-widget",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "AfterShip WooCommerce Tracking",
+      "slug": "aftership-woocommerce-tracking",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Autocomplete WooCommerce Orders",
+      "slug": "autocomplete-woocommerce-orders",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Tuxedo Big File Uploads",
+      "slug": "tuxedo-big-file-uploads",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "WP-Piwik",
+      "slug": "wp-piwik",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Contact Form 7",
+      "slug": "contact-form-7",
+      "installer": "wp",
+      "activate": true,
+      "required": true
+    },
+    {
+      "name": "Download Monitor",
+      "slug": "download-monitor",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Embed Optimizer",
+      "slug": "embed-optimizer",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Auto Sizes",
+      "slug": "auto-sizes",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "WooCommerce Auto Added Coupons",
+      "slug": "woocommerce-auto-added-coupons",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Flamingo",
+      "slug": "flamingo",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Font Awesome",
+      "slug": "font-awesome",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Dominant Color Images",
+      "slug": "dominant-color-images",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Image Prioritizer",
+      "slug": "image-prioritizer",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Jetpack",
+      "slug": "jetpack",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Last Modified Timestamp",
+      "slug": "last-modified-timestamp",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Auth0",
+      "slug": "auth0",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Official MailerLite Sign Up Forms",
+      "slug": "official-mailerlite-sign-up-forms",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Woo MailerLite",
+      "slug": "woo-mailerlite",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "MailerSend Official SMTP Integration",
+      "slug": "mailersend-official-smtp-integration",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "MailerSend Transactional Emails for WooCommerce",
+      "slug": "mailersend-transactional-emails-for-woocommerce",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Manage Notification Emails",
+      "slug": "manage-notification-emails",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "WebP Uploads",
+      "slug": "webp-uploads",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Norton Shopping Guarantee",
+      "slug": "norton-shopping-guarantee",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Optimization Detective",
+      "slug": "optimization-detective",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Page Links To",
+      "slug": "page-links-to",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "PDF Embedder",
+      "slug": "pdf-embedder",
+      "installer": "wp",
+      "activate": true,
+      "required": true
+    },
+    {
+      "name": "Performance Lab",
+      "slug": "performance-lab",
+      "installer": "wp",
+      "activate": true,
+      "required": true
+    },
+    {
+      "name": "WC Product Customer List",
+      "slug": "wc-product-customer-list",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Quick Featured Images",
+      "slug": "quick-featured-images",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Redis Cache",
+      "slug": "redis-cache",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Simple Expires",
+      "slug": "simple-expires",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Simple History",
+      "slug": "simple-history",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Soft79 Cart Links for WooCommerce",
+      "slug": "soft79-cart-links-for-woocommerce",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Speculation Rules",
+      "slug": "speculation-rules",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Sticky Menu (or Anything!) on Scroll",
+      "slug": "sticky-menu-or-anything-on-scroll",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "WooCommerce Stock Manager",
+      "slug": "woocommerce-stock-manager",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "TablePress",
+      "slug": "tablepress",
+      "installer": "wp",
+      "activate": true,
+      "required": true
+    },
+    {
+      "name": "Widget Options",
+      "slug": "widget-options",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "WooCommerce",
+      "slug": "woocommerce",
+      "installer": "wp",
+      "activate": true,
+      "required": true
+    },
+    {
+      "name": "WooCommerce Shipping",
+      "slug": "woocommerce-shipping",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "WooCommerce Square",
+      "slug": "woocommerce-square",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "WooCommerce Stripe Gateway",
+      "slug": "woocommerce-gateway-stripe",
+      "installer": "wp",
+      "activate": true,
+      "required": true
+    },
+    {
+      "name": "WooCommerce Services",
+      "slug": "woocommerce-services",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Amazon S3 and CloudFront",
+      "slug": "amazon-s3-and-cloudfront",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Duplicate Post",
+      "slug": "duplicate-post",
+      "installer": "wp",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Flux Checkout for WooCommerce",
+      "slug": "flux-checkout-for-woocommerce",
+      "installer": "wp_wc_com",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Product Bundles",
+      "slug": "woocommerce-product-bundles",
+      "installer": "wp_wc_com",
+      "activate": true,
+      "required": false
+    },
+    {
+      "name": "Customer/Order/Coupon Export",
+      "slug": "woocommerce-customer-order-coupon-export",
+      "installer": "wp_wc_com",
+      "activate": true,
+      "required": false
+    }
+  ],
+  "themes": []
+}
