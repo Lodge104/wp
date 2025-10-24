@@ -1,0 +1,130 @@
+name: Build and Deploy WordPress to ECR
+
+on:
+  # Run weekly on Sundays at 2 AM UTC
+  schedule:
+    - cron: '0 2 * * 0'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+  
+  # Run on pushes to main branch
+  push:
+    branches:
+      - main
+      - master
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 423971488961.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: lodge104/wp
+  IMAGE_TAG: latest
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy to ECR
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build Docker image
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$(date +%Y%m%d-%H%M%S) .
+        
+    - name: Run security scan with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'CRITICAL,HIGH'
+        exit-code: '0'  # Don't fail build on vulnerabilities, just report
+        
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+        
+    - name: Test Docker image
+      run: |
+        # Quick smoke test - start container and check if it responds
+        docker run -d --name wp-test \
+          -e WORDPRESS_DB_HOST=localhost \
+          -e WORDPRESS_DB_USER=test \
+          -e WORDPRESS_DB_PASSWORD=test \
+          -e WORDPRESS_DB_NAME=test \
+          -p 8080:80 \
+          $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        
+        # Wait a moment for container to start
+        sleep 10
+        
+        # Check if container is running
+        if docker ps | grep wp-test; then
+          echo "✅ Container started successfully"
+        else
+          echo "❌ Container failed to start"
+          docker logs wp-test
+          exit 1
+        fi
+        
+        # Cleanup
+        docker stop wp-test
+        docker rm wp-test
+        
+    - name: Push to ECR
+      run: |
+        echo "Pushing images to ECR..."
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$(date +%Y%m%d-%H%M%S)
+        
+    - name: Generate deployment summary
+      run: |
+        echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **ECR Registry:** $ECR_REGISTRY" >> $GITHUB_STEP_SUMMARY
+        echo "- **Repository:** $ECR_REPOSITORY" >> $GITHUB_STEP_SUMMARY
+        echo "- **Image Tag:** $IMAGE_TAG" >> $GITHUB_STEP_SUMMARY
+        echo "- **Build Date:** $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit SHA:** $GITHUB_SHA" >> $GITHUB_STEP_SUMMARY
+        
+        echo "### 📦 Available Tags" >> $GITHUB_STEP_SUMMARY
+        echo "- \`latest\` - Latest build" >> $GITHUB_STEP_SUMMARY
+        echo "- \`$(date +%Y%m%d-%H%M%S)\` - Timestamped build" >> $GITHUB_STEP_SUMMARY
+        
+        echo "### 🔧 Environment Variables Supported" >> $GITHUB_STEP_SUMMARY
+        echo "| Variable | Description | Required |" >> $GITHUB_STEP_SUMMARY
+        echo "|----------|-------------|----------|" >> $GITHUB_STEP_SUMMARY
+        echo "| \`WORDPRESS_DB_HOST\` | Database hostname | Yes |" >> $GITHUB_STEP_SUMMARY
+        echo "| \`WORDPRESS_DB_USER\` | Database username | Yes |" >> $GITHUB_STEP_SUMMARY
+        echo "| \`WORDPRESS_DB_PASSWORD\` | Database password | Yes |" >> $GITHUB_STEP_SUMMARY
+        echo "| \`WORDPRESS_DB_NAME\` | Database name | Yes |" >> $GITHUB_STEP_SUMMARY
+        echo "| \`WOOCOMMERCE_API_KEY\` | WooCommerce.com API key | No |" >> $GITHUB_STEP_SUMMARY
+        echo "| \`WP_REDIS_HOST\` | Redis endpoint | No |" >> $GITHUB_STEP_SUMMARY
+        echo "| \`WP_REDIS_PREFIX\` | Redis key prefix | No |" >> $GITHUB_STEP_SUMMARY
+        echo "| \`ENABLE_MULTISITE\` | Enable WordPress multisite | No |" >> $GITHUB_STEP_SUMMARY
+        
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "❌ Build failed! Check the logs above for details."
+        echo "## ❌ Build Failed" >> $GITHUB_STEP_SUMMARY
+        echo "The WordPress Docker build and deployment failed." >> $GITHUB_STEP_SUMMARY
+        echo "Please check the workflow logs for details." >> $GITHUB_STEP_SUMMARY
