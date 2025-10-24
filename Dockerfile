@@ -9,11 +9,10 @@ RUN apt-get update && apt-get install -y \
     less \
     jq \
     curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -O https://raw.githubusercontent.com/wp-cli/wp-cli/v2/utils/wp-cli-installer.php \
-    && php wp-cli-installer.php \
-    && rm wp-cli-installer.php \
-    && mv wp-cli.phar /usr/local/bin/wp \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install WP-CLI using the official method
+RUN curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x /usr/local/bin/wp
 
 # Create directories for plugins and themes
