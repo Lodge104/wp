@@ -125,6 +125,7 @@ echo "🔧 Adding custom PHP configuration..."
 
 # Create temporary PHP file with custom configuration
 cat << 'EOF' > /tmp/custom-config.php
+
 // Dynamic site URL configuration
 define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST'] . '/');
 define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST'] . '/');
@@ -136,15 +137,20 @@ if (
 ) {
     $_SERVER['HTTPS'] = 'on';
 }
+
 EOF
 
 # Add the custom PHP code to wp-config.php before the "/* That's all" line
-sed -i "/\/\* That's all/i\\$(cat /tmp/custom-config.php)" /var/www/html/wp-config.php
+if [ -f /var/www/html/wp-config.php ]; then
+    # Use a more reliable method to insert the custom configuration
+    sed -i '/\/\* That'\''s all/r /tmp/custom-config.php' /var/www/html/wp-config.php
+    echo "✅ Custom PHP configuration added to wp-config.php"
+else
+    echo "⚠️  wp-config.php not found, custom PHP configuration skipped"
+fi
 
 # Clean up temporary file
 rm -f /tmp/custom-config.php
-
-echo "✅ Custom PHP configuration added"
 
 # Install all plugins from the list
 install_plugins

@@ -45,8 +45,13 @@ jobs:
       
     - name: Build Docker image
       run: |
+        # Generate timestamp for consistent tagging
+        TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+        echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+        
+        # Build images with both tags
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$(date +%Y%m%d-%H%M%S) .
+        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$TIMESTAMP
         
     - name: Run security scan with Trivy
       uses: aquasecurity/trivy-action@master
@@ -94,7 +99,7 @@ jobs:
       run: |
         echo "Pushing images to ECR..."
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$(date +%Y%m%d-%H%M%S)
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$TIMESTAMP
         
     - name: Generate deployment summary
       run: |
@@ -107,7 +112,7 @@ jobs:
         
         echo "### 📦 Available Tags" >> $GITHUB_STEP_SUMMARY
         echo "- \`latest\` - Latest build" >> $GITHUB_STEP_SUMMARY
-        echo "- \`$(date +%Y%m%d-%H%M%S)\` - Timestamped build" >> $GITHUB_STEP_SUMMARY
+        echo "- \`$TIMESTAMP\` - Timestamped build" >> $GITHUB_STEP_SUMMARY
         
         echo "### 🔧 Environment Variables Supported" >> $GITHUB_STEP_SUMMARY
         echo "| Variable | Description | Required |" >> $GITHUB_STEP_SUMMARY
