@@ -4,11 +4,17 @@ FROM wordpress:latest
 # Set maintainer
 LABEL maintainer="Lodge104"
 
-# Install additional tools if needed (WP-CLI is already included in wordpress:latest)
+# Install WP-CLI and additional tools
 RUN apt-get update && apt-get install -y \
     less \
     jq \
-    && rm -rf /var/lib/apt/lists/*
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -O https://raw.githubusercontent.com/wp-cli/wp-cli/v2/utils/wp-cli-installer.php \
+    && php wp-cli-installer.php \
+    && rm wp-cli-installer.php \
+    && mv wp-cli.phar /usr/local/bin/wp \
+    && chmod +x /usr/local/bin/wp
 
 # Create directories for plugins and themes
 WORKDIR /usr/src/wordpress
