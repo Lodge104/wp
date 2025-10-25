@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     less \
     jq \
     curl \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Install WP-CLI using the official method

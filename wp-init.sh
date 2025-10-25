@@ -53,13 +53,24 @@ install_plugins() {
         elif [ "$installer" = "wp_wc_com" ]; then
             # WooCommerce.com extension installation using WC CLI
             echo "  🛒 Using WooCommerce CLI for: $name"
-            if ! wp wc com extension install --extension="$slug" --activate --allow-root 2>/dev/null; then
+            
+            # Check if WooCommerce API key is configured
+            if [ -z "${WOOCOMMERCE_API_KEY:-}" ]; then
+                echo "  ⚠️  SKIPPED: $name - No WooCommerce API key provided"
+                echo "      Set WOOCOMMERCE_API_KEY environment variable to install WooCommerce.com extensions"
+                continue
+            fi
+            
+            # Attempt to install with more detailed error output
+            if wp wc com extension install --extension="$slug" --activate --allow-root 2>&1; then
+                echo "  ✅ Successfully installed: $name"
+            else
                 if [ "$required" = "true" ]; then
                     echo "  ❌ FAILED: Required WooCommerce extension $name could not be installed"
-                    echo "      Make sure WOOCOMMERCE_API_KEY is set and valid"
+                    echo "      Verify WOOCOMMERCE_API_KEY is valid and has access to this extension"
                 else
                     echo "  ⚠️  SKIPPED: WooCommerce extension $name failed to install"
-                    echo "      This may require a valid WooCommerce.com API key"
+                    echo "      Check that your WooCommerce.com account has access to this extension"
                 fi
             fi
         elif [ "$installer" = "manual" ]; then
@@ -111,9 +122,11 @@ wp config set WP_AUTO_UPDATE_CORE "${WP_AUTO_UPDATE_CORE:-minor}" --allow-root
 if [ "${ENABLE_MULTISITE:-false}" = "true" ]; then
     echo "🔧 Enabling WordPress Multisite..."
     wp config set WP_ALLOW_MULTISITE true --raw --allow-root
-    wp config set MULTISITE true --raw --allow-root
-    wp config set SUBDOMAIN_INSTALL "${SUBDOMAIN_INSTALL:-true}" --raw --allow-root
-    echo "✅ Multisite configuration enabled"
+    
+    # Only set MULTISITE and SUBDOMAIN_INSTALL after WordPress is fully set up
+    # These will be set when the site is actually configured for multisite
+    echo "⚠️  Multisite allowed - configure network via WordPress admin"
+    echo "    Then manually set MULTISITE=true and SUBDOMAIN_INSTALL in wp-config.php"
 else
     echo "ℹ️  Multisite disabled (set ENABLE_MULTISITE=true to enable)"
 fi
@@ -126,9 +139,11 @@ echo "🔧 Adding custom PHP configuration..."
 # Create temporary PHP file with custom configuration
 cat << 'EOF' > /tmp/custom-config.php
 
-// Dynamic site URL configuration
-define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST'] . '/');
-define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST'] . '/');
+// Dynamic site URL configuration (only when HTTP_HOST is available)
+if (isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
+    define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST'] . '/');
+    define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST'] . '/');
+}
 
 // CloudFront HTTPS detection
 if (
@@ -171,21 +186,49 @@ done
 echo "🎨 Installing custom themes from ZIP files..."
 if [ -d "/usr/src/wordpress/wp-content/themes" ]; then
     # Install ZIP files using WP-CLI
+    zip_found=false
     for zip_file in /usr/src/wordpress/wp-content/themes/*.zip; do
         if [ -f "$zip_file" ]; then
+            zip_found=true
             theme_name=$(basename "$zip_file" .zip)
             echo "  📦 Installing theme from ZIP: $theme_name"
-            wp theme install "$zip_file" --allow-root 2>/dev/null || echo "  ⚠️  Failed to install: $theme_name"
+            
+            # Check if ZIP file is valid and attempt installation with detailed output
+            if wp theme install "$zip_file" --allow-root 2>&1; then
+                echo "  ✅ Successfully installed theme: $theme_name"
+            else
+                echo "  ⚠️  Failed to install theme: $theme_name"
+                echo "      Check that the ZIP file contains a valid WordPress theme"
+                echo "      ZIP file location: $zip_file"
+                
+                # Try to get more info about the ZIP file
+                if command -v unzip >/dev/null 2>&1; then
+                    echo "      ZIP contents:"
+                    unzip -l "$zip_file" 2>/dev/null | head -10 || echo "      Unable to read ZIP contents"
+                fi
+            fi
         fi
     done
     
+    if [ "$zip_found" = false ]; then
+        echo "  ℹ️  No ZIP files found in themes directory"
+    fi
+    
     # Check for existing theme directories (already extracted)
+    dir_found=false
     for theme_dir in /usr/src/wordpress/wp-content/themes/*/; do
         if [ -d "$theme_dir" ] && [[ ! "$(basename "$theme_dir")" =~ ^twenty.* ]]; then
+            dir_found=true
             theme_name=$(basename "$theme_dir")
             echo "  ✅ Found existing theme directory: $theme_name"
         fi
     done
+    
+    if [ "$dir_found" = false ] && [ "$zip_found" = false ]; then
+        echo "  ℹ️  No custom themes found"
+    fi
+else
+    echo "  ⚠️  Themes directory not found: /usr/src/wordpress/wp-content/themes"
 fi
 
 # Optional: Activate theme if specified

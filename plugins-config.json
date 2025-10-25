@@ -331,7 +331,7 @@
     },
     {
       "name": "Product Bundles",
-      "slug": "woocommerce-product-bundles",
+      "slug": "product-bundles",
       "installer": "wp_wc_com",
       "activate": true,
       "required": false
