@@ -6,9 +6,19 @@ echo "🚀 Starting WordPress initialization..."
 
 # Configuration
 PLUGINS_CONFIG="/usr/local/bin/plugins-config.json"
+WORDPRESS_ROOT="/var/www/html"
+
+# Change to WordPress root directory - CRITICAL for WP-CLI to work properly
+cd "$WORDPRESS_ROOT"
+
+# Debug: Show current directory and WordPress files
+echo "🔍 Debug: Current working directory: $(pwd)"
+echo "🔍 Debug: WordPress root directory: $WORDPRESS_ROOT" 
+echo "🔍 Debug: WordPress files present:"
+ls -la "$WORDPRESS_ROOT" | head -5
 
 # Wait for WordPress to be ready
-until wp core is-installed --allow-root 2>/dev/null; do
+until wp core is-installed --allow-root --path="$WORDPRESS_ROOT" 2>/dev/null; do
   echo "⏳ Waiting for WordPress to be ready..."
   sleep 2
 done
@@ -34,7 +44,7 @@ install_plugins() {
         
         if [ "$installer" = "wp" ]; then
             if [ "$activate" = "true" ]; then
-                wp plugin install "$slug" --activate --allow-root 2>/dev/null || {
+                wp plugin install "$slug" --activate --allow-root --path="$WORDPRESS_ROOT" 2>/dev/null || {
                     if [ "$required" = "true" ]; then
                         echo "  ❌ FAILED: Required plugin $name could not be installed"
                     else
@@ -42,7 +52,7 @@ install_plugins() {
                     fi
                 }
             else
-                wp plugin install "$slug" --allow-root 2>/dev/null || {
+                wp plugin install "$slug" --allow-root --path="$WORDPRESS_ROOT" 2>/dev/null || {
                     if [ "$required" = "true" ]; then
                         echo "  ❌ FAILED: Required plugin $name could not be installed"
                     else
@@ -62,7 +72,7 @@ install_plugins() {
             fi
             
             # Attempt to install with more detailed error output
-            if wp wc com extension install --extension="$slug" --activate --allow-root 2>&1; then
+            if wp wc com extension install --extension="$slug" --activate --allow-root --path="$WORDPRESS_ROOT" 2>&1; then
                 echo "  ✅ Successfully installed: $name"
             else
                 if [ "$required" = "true" ]; then
@@ -84,7 +94,7 @@ if [ -n "${WOOCOMMERCE_API_KEY:-}" ]; then
     echo "🔑 Configuring WooCommerce API key..."
     
     # Set the API key in wp-config.php
-    wp config set WOOCOMMERCE_API_KEY "$WOOCOMMERCE_API_KEY" --allow-root
+    wp config set WOOCOMMERCE_API_KEY "$WOOCOMMERCE_API_KEY" --allow-root --path="$WORDPRESS_ROOT"
     
     # Also configure WC CLI with the API key for com extensions
     # Note: The actual configuration method may vary based on WC CLI requirements
@@ -102,26 +112,26 @@ echo "⚙️  Configuring WordPress settings..."
 # Redis configuration (using environment variables)
 if [ -n "${WP_REDIS_HOST:-}" ]; then
     echo "🔧 Configuring Redis settings..."
-    wp config set WP_REDIS_HOST "${WP_REDIS_HOST}" --allow-root
-    wp config set WP_REDIS_SCHEME "${WP_REDIS_SCHEME:-tls}" --allow-root
-    wp config set WP_REDIS_PORT "${WP_REDIS_PORT:-6379}" --type=constant --allow-root
-    wp config set WP_REDIS_PREFIX "${WP_REDIS_PREFIX:-wordpress}" --allow-root
-    wp config set WP_REDIS_DATABASE "${WP_REDIS_DATABASE:-0}" --type=constant --allow-root
-    wp config set WP_REDIS_TIMEOUT "${WP_REDIS_TIMEOUT:-10}" --type=constant --allow-root
-    wp config set WP_REDIS_READ_TIMEOUT "${WP_REDIS_READ_TIMEOUT:-10}" --type=constant --allow-root
+    wp config set WP_REDIS_HOST "${WP_REDIS_HOST}" --allow-root --path="$WORDPRESS_ROOT"
+    wp config set WP_REDIS_SCHEME "${WP_REDIS_SCHEME:-tls}" --allow-root --path="$WORDPRESS_ROOT"
+    wp config set WP_REDIS_PORT "${WP_REDIS_PORT:-6379}" --type=constant --allow-root --path="$WORDPRESS_ROOT"
+    wp config set WP_REDIS_PREFIX "${WP_REDIS_PREFIX:-wordpress}" --allow-root --path="$WORDPRESS_ROOT"
+    wp config set WP_REDIS_DATABASE "${WP_REDIS_DATABASE:-0}" --type=constant --allow-root --path="$WORDPRESS_ROOT"
+    wp config set WP_REDIS_TIMEOUT "${WP_REDIS_TIMEOUT:-10}" --type=constant --allow-root --path="$WORDPRESS_ROOT"
+    wp config set WP_REDIS_READ_TIMEOUT "${WP_REDIS_READ_TIMEOUT:-10}" --type=constant --allow-root --path="$WORDPRESS_ROOT"
     echo "✅ Redis configuration applied"
 else
     echo "⚠️  No Redis configuration provided (WP_REDIS_HOST not set)"
 fi
 
 # File system and update settings
-wp config set FS_METHOD "${FS_METHOD:-direct}" --allow-root
-wp config set WP_AUTO_UPDATE_CORE "${WP_AUTO_UPDATE_CORE:-minor}" --allow-root
+wp config set FS_METHOD "${FS_METHOD:-direct}" --allow-root --path="$WORDPRESS_ROOT"
+wp config set WP_AUTO_UPDATE_CORE "${WP_AUTO_UPDATE_CORE:-minor}" --allow-root --path="$WORDPRESS_ROOT"
 
 # Multisite configuration (using environment variables)
 if [ "${ENABLE_MULTISITE:-false}" = "true" ]; then
     echo "🔧 Enabling WordPress Multisite..."
-    wp config set WP_ALLOW_MULTISITE true --raw --allow-root
+    wp config set WP_ALLOW_MULTISITE true --raw --allow-root --path="$WORDPRESS_ROOT"
     
     # Only set MULTISITE and SUBDOMAIN_INSTALL after WordPress is fully set up
     # These will be set when the site is actually configured for multisite
@@ -156,12 +166,12 @@ if (
 EOF
 
 # Add the custom PHP code to wp-config.php before the "/* That's all" line
-if [ -f /var/www/html/wp-config.php ]; then
+if [ -f "$WORDPRESS_ROOT/wp-config.php" ]; then
     # Use a more reliable method to insert the custom configuration
-    sed -i '/\/\* That'\''s all/r /tmp/custom-config.php' /var/www/html/wp-config.php
+    sed -i '/\/\* That'\''s all/r /tmp/custom-config.php' "$WORDPRESS_ROOT/wp-config.php"
     echo "✅ Custom PHP configuration added to wp-config.php"
 else
-    echo "⚠️  wp-config.php not found, custom PHP configuration skipped"
+    echo "⚠️  wp-config.php not found at $WORDPRESS_ROOT, custom PHP configuration skipped"
 fi
 
 # Clean up temporary file
@@ -179,22 +189,22 @@ for theme_data in $themes; do
     slug=$(echo "$theme" | jq -r '.slug')
     
     echo "  🎨 Installing theme: $name ($slug)"
-    wp theme install "$slug" --allow-root 2>/dev/null || echo "  ⚠️  SKIPPED: $name"
+    wp theme install "$slug" --allow-root --path="$WORDPRESS_ROOT" 2>/dev/null || echo "  ⚠️  SKIPPED: $name"
 done
 
 # Install custom themes from ZIP files
 echo "🎨 Installing custom themes from ZIP files..."
-if [ -d "/usr/src/wordpress/wp-content/themes" ]; then
+if [ -d "$WORDPRESS_ROOT/wp-content/themes" ]; then
     # Install ZIP files using WP-CLI
     zip_found=false
-    for zip_file in /usr/src/wordpress/wp-content/themes/*.zip; do
+    for zip_file in "$WORDPRESS_ROOT/wp-content/themes"/*.zip; do
         if [ -f "$zip_file" ]; then
             zip_found=true
             theme_name=$(basename "$zip_file" .zip)
             echo "  📦 Installing theme from ZIP: $theme_name"
             
             # Check if ZIP file is valid and attempt installation with detailed output
-            if wp theme install "$zip_file" --allow-root 2>&1; then
+            if wp theme install "$zip_file" --allow-root --path="$WORDPRESS_ROOT" 2>&1; then
                 echo "  ✅ Successfully installed theme: $theme_name"
             else
                 echo "  ⚠️  Failed to install theme: $theme_name"
@@ -216,7 +226,7 @@ if [ -d "/usr/src/wordpress/wp-content/themes" ]; then
     
     # Check for existing theme directories (already extracted)
     dir_found=false
-    for theme_dir in /usr/src/wordpress/wp-content/themes/*/; do
+    for theme_dir in "$WORDPRESS_ROOT/wp-content/themes"/*/; do
         if [ -d "$theme_dir" ] && [[ ! "$(basename "$theme_dir")" =~ ^twenty.* ]]; then
             dir_found=true
             theme_name=$(basename "$theme_dir")
@@ -228,13 +238,13 @@ if [ -d "/usr/src/wordpress/wp-content/themes" ]; then
         echo "  ℹ️  No custom themes found"
     fi
 else
-    echo "  ⚠️  Themes directory not found: /usr/src/wordpress/wp-content/themes"
+    echo "  ⚠️  Themes directory not found: $WORDPRESS_ROOT/wp-content/themes"
 fi
 
 # Optional: Activate theme if specified
 if [ -n "${ACTIVATE_THEME:-}" ]; then
     echo "🎨 Activating theme: ${ACTIVATE_THEME}"
-    wp theme activate "${ACTIVATE_THEME}" --allow-root 2>/dev/null || echo "⚠️  Theme ${ACTIVATE_THEME} could not be activated"
+    wp theme activate "${ACTIVATE_THEME}" --allow-root --path="$WORDPRESS_ROOT" 2>/dev/null || echo "⚠️  Theme ${ACTIVATE_THEME} could not be activated"
 fi
 
 # Optional: Install additional plugins from environment variable
@@ -245,7 +255,7 @@ if [ -n "${ADDITIONAL_PLUGINS:-}" ]; then
         plugin=$(echo "$plugin" | xargs) # trim whitespace
         if [ -n "$plugin" ]; then
             echo "  📦 Installing: $plugin"
-            wp plugin install "$plugin" --activate --allow-root 2>/dev/null || echo "  ⚠️  Failed to install: $plugin"
+            wp plugin install "$plugin" --activate --allow-root --path="$WORDPRESS_ROOT" 2>/dev/null || echo "  ⚠️  Failed to install: $plugin"
         fi
     done
 fi
@@ -255,9 +265,9 @@ echo "✅ WordPress initialization completed successfully!"
 # Show summary
 echo ""
 echo "📋 Installation Summary:"
-echo "  Plugins: $(wp plugin list --allow-root --format=count) installed"
-echo "  Themes: $(wp theme list --allow-root --format=count) available"
-echo "  Active theme: $(wp theme list --status=active --allow-root --field=name)"
+echo "  Plugins: $(wp plugin list --allow-root --path="$WORDPRESS_ROOT" --format=count) installed"
+echo "  Themes: $(wp theme list --allow-root --path="$WORDPRESS_ROOT" --format=count) available"
+echo "  Active theme: $(wp theme list --status=active --allow-root --path="$WORDPRESS_ROOT" --field=name)"
 echo ""
-echo "🔧 Use 'wp plugin list --allow-root' to see all installed plugins"
+echo "🔧 Use 'wp plugin list --allow-root --path=\"$WORDPRESS_ROOT\"' to see all installed plugins"
 echo "🎯 WordPress is ready for use!"

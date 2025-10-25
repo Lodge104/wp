@@ -19,17 +19,18 @@ RUN curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh
 # Create directories for plugins and themes
 WORKDIR /usr/src/wordpress
 
-# Copy custom plugins and themes
+# Copy custom plugins and themes to source directory (will be copied to /var/www/html by WordPress entrypoint)
 # COPY plugins/ /usr/src/wordpress/wp-content/plugins/
 COPY themes/ /usr/src/wordpress/wp-content/themes/
 
-# Create wp-content directories to ensure they exist
+# Create wp-content directories to ensure they exist in both locations
 RUN mkdir -p /usr/src/wordpress/wp-content/plugins /usr/src/wordpress/wp-content/themes
 
 # Note: WP-CLI plugin/theme installation happens at runtime via wp-init.sh
 # This is because WP-CLI needs WordPress to be fully initialized first
+# The WordPress entrypoint will copy files from /usr/src/wordpress to /var/www/html
 
-# Set proper permissions
+# Set proper permissions for source directory
 RUN chown -R www-data:www-data /usr/src/wordpress/wp-content/ && \
     chmod -R 755 /usr/src/wordpress/wp-content/
 
