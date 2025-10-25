@@ -4,48 +4,47 @@ FROM wordpress:latest
 # Set maintainer
 LABEL maintainer="Lodge104"
 
-# Install WP-CLI and additional tools
+# Install WP-CLI and build tools (only needed during build)
 RUN apt-get update && apt-get install -y \
-    less \
-    jq \
     curl \
-    unzip \
+    jq \
     && rm -rf /var/lib/apt/lists/*
 
-# Install WP-CLI using the official method
+# Install WP-CLI for build-time plugin/theme installation
 RUN curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x /usr/local/bin/wp
 
-# Create directories for plugins and themes
+# Set working directory to WordPress source
 WORKDIR /usr/src/wordpress
 
-# Copy custom plugins and themes to source directory (will be copied to /var/www/html by WordPress entrypoint)
-# COPY plugins/ /usr/src/wordpress/wp-content/plugins/
-COPY themes/ /usr/src/wordpress/wp-content/themes/
-
-# Create wp-content directories to ensure they exist in both locations
+# Create wp-content directories for plugins and themes
 RUN mkdir -p /usr/src/wordpress/wp-content/plugins /usr/src/wordpress/wp-content/themes
 
-# Note: WP-CLI plugin/theme installation happens at runtime via wp-init.sh
-# This is because WP-CLI needs WordPress to be fully initialized first
-# The WordPress entrypoint will copy files from /usr/src/wordpress to /var/www/html
+# Copy plugin configuration for build-time installation
+COPY plugins-config.json /tmp/plugins-config.json
 
-# Set proper permissions for source directory
+# Download plugins as ZIP files during build
+RUN cd /tmp && \
+    jq -r '.plugins[] | select(.installer == "wp") | .slug' plugins-config.json | while read plugin; do \
+    echo "Downloading plugin: $plugin"; \
+    curl -L "https://downloads.wordpress.org/plugin/${plugin}.zip" -o "/usr/src/wordpress/wp-content/plugins/${plugin}.zip" 2>/dev/null || echo "Failed to download: $plugin"; \
+    done
+
+# Copy custom themes (if any) to source directory
+COPY themes/ /usr/src/wordpress/wp-content/themes/
+
+# Set proper permissions for WordPress source files
 RUN chown -R www-data:www-data /usr/src/wordpress/wp-content/ && \
     chmod -R 755 /usr/src/wordpress/wp-content/
 
-# Copy initialization script, plugin config, and custom entrypoint
-COPY wp-init.sh /usr/local/bin/wp-init.sh
-COPY plugins-config.json /usr/local/bin/plugins-config.json
-COPY custom-entrypoint.sh /usr/local/bin/custom-entrypoint.sh
-RUN chmod +x /usr/local/bin/wp-init.sh /usr/local/bin/custom-entrypoint.sh
-
-# Copy custom wp-config.php if needed
-# COPY wp-config.php /usr/src/wordpress/
+# Clean up build dependencies to reduce image size
+RUN apt-get purge -y curl jq && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/* /tmp/plugins-config.json /usr/local/bin/wp
 
 # Expose port 80
 EXPOSE 80
 
-# Use our custom entrypoint that extends WordPress entrypoint
-ENTRYPOINT ["/usr/local/bin/custom-entrypoint.sh"]
-CMD ["apache2-foreground"]
+# Use standard WordPress entrypoint - no custom scripts needed
+# WordPress will automatically copy files from /usr/src/wordpress to /var/www/html
+# and handle all initialization based on environment variables
