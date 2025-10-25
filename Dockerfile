@@ -6,7 +6,7 @@ LABEL maintainer="Lodge104"
 
 WORKDIR /usr/src/wordpress
 
-COPY wp-config.php .
+# COPY wp-config.php .
 
 # Install build tools (only needed during build)
 RUN apt-get update && apt-get install -y \
